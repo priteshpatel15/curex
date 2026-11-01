@@ -1,0 +1,190 @@
+# Example Configuration for Natural Language Data Analysis System
+# Copy this to config.yaml and update with your settings
+
+# LLM Model Configurations
+models:
+  # OpenAI Configuration
+  openai:
+    provider: "openai"
+    models:
+      - name: "gpt-4"
+        api_key: "${OPENAI_API_KEY}"  # Set via environment variable
+        max_tokens: 4000
+        temperature: 0.1
+        cost_per_token: 0.00003
+        context_window: 8192
+        capabilities: ["code_generation", "data_analysis", "advanced_reasoning"]
+      
+      - name: "gpt-3.5-turbo"
+        api_key: "${OPENAI_API_KEY}"
+        max_tokens: 4000
+        temperature: 0.1
+        cost_per_token: 0.0000015
+        context_window: 16385
+        capabilities: ["code_generation", "data_analysis", "fast_response"]
+
+  # Anthropic Configuration
+  anthropic:
+    provider: "anthropic"
+    models:
+      - name: "claude-3-opus-20240229"
+        api_key: "${ANTHROPIC_API_KEY}"  # Set via environment variable
+        max_tokens: 4000
+        temperature: 0.1
+        cost_per_token: 0.000015
+        context_window: 200000
+        capabilities: ["code_generation", "complex_reasoning", "large_context"]
+      
+      - name: "claude-3-sonnet-20240229"
+        api_key: "${ANTHROPIC_API_KEY}"
+        max_tokens: 4000
+        temperature: 0.1
+        cost_per_token: 0.000003
+        context_window: 200000
+        capabilities: ["code_generation", "balanced_performance", "good_quality"]
+
+  # Local Model Configuration (Ollama)
+  local:
+    provider: "local"
+    base_url: "http://localhost:11434"
+    models:
+      - name: "codellama"
+        max_tokens: 2000
+        temperature: 0.1
+        cost_per_token: 0.0
+        context_window: 4096
+        capabilities: ["code_generation", "privacy_focused", "offline"]
+      
+      - name: "llama2"
+        max_tokens: 2000
+        temperature: 0.1
+        cost_per_token: 0.0
+        context_window: 4096
+        capabilities: ["general_purpose", "privacy_focused", "offline"]
+
+# Application Settings
+app:
+  # Default model to use (will try in order)
+  default_models:
+    - "gpt-3.5-turbo"
+    - "claude-3-sonnet-20240229"
+    - "codellama"
+  
+  # Model selection strategy: "manual", "performance", "cost"
+  model_selection_strategy: "performance"
+  
+  # Data processing settings
+  data:
+    max_file_size_mb: 500
+    memory_optimization: true
+    chunk_size: 10000
+    auto_dtype_optimization: true
+  
+  # Code execution settings
+  execution:
+    timeout_seconds: 30
+    max_plots_per_session: 10
+    plot_dpi: 100
+    enable_plot_generation: true
+  
+  # NLP settings
+  nlp:
+    spacy_model: "en_core_web_sm"
+    fuzzy_match_threshold: 0.7
+    confidence_threshold: 0.5
+
+# Web Server Settings
+server:
+  host: "0.0.0.0"
+  port: 8000
+  debug: false
+  cors_origins: ["*"]  # In production, specify allowed origins
+  
+  # Rate limiting
+  rate_limit:
+    requests_per_minute: 60
+    burst_size: 10
+  
+  # File upload settings
+  upload:
+    max_file_size: "100MB"
+    allowed_extensions: [".csv", ".xlsx", ".xls", ".json"]
+    temp_directory: "./temp"
+
+# Logging Configuration
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/app.log"
+  max_size_mb: 10
+  backup_count: 5
+
+# Security Settings
+security:
+  # Code execution restrictions
+  execution:
+    allowed_modules:
+      - "pandas"
+      - "numpy"
+      - "scipy"
+      - "matplotlib"
+      - "seaborn"
+      - "plotly"
+      - "sklearn"
+      - "statsmodels"
+    
+    blocked_functions:
+      - "exec"
+      - "eval"
+      - "compile"
+      - "open"
+      - "__import__"
+      - "getattr"
+      - "setattr"
+    
+    blocked_modules:
+      - "os"
+      - "sys"
+      - "subprocess"
+      - "socket"
+      - "urllib"
+      - "requests"
+
+# Database Settings (Optional - for session persistence)
+database:
+  type: "sqlite"  # sqlite, postgresql, mysql
+  url: "sqlite:///./data/sessions.db"
+  echo: false  # Set to true for SQL debugging
+
+# Cache Settings (Optional - for performance)
+cache:
+  type: "memory"  # memory, redis
+  redis_url: "redis://localhost:6379/0"
+  ttl_seconds: 3600
+
+# Monitoring and Analytics
+monitoring:
+  enable_usage_tracking: true
+  enable_cost_tracking: true
+  enable_performance_monitoring: true
+  
+  # External monitoring services
+  services:
+    # Example: Sentry for error tracking
+    sentry:
+      enabled: false
+      dsn: "${SENTRY_DSN}"
+    
+    # Example: Prometheus for metrics
+    prometheus:
+      enabled: false
+      port: 9090
+
+# Development Settings
+development:
+  auto_reload: true
+  debug_mode: true
+  sample_data:
+    auto_create: true
+    dataset_name: "demo_sales"
+    rows: 1000 
